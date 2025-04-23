@@ -3,11 +3,8 @@
 import { useState, useEffect, useRef } from "react"
 import Modal from "./Modal"
 import ProgressModal from "./ProgressModal"
-import { useAuth } from "../context/AuthContext"
 
 function CertificateForm() {
-  const { token, logout } = useAuth()
-
   // Form state
   const [formData, setFormData] = useState({
     event_name: "",
@@ -81,7 +78,7 @@ function CertificateForm() {
       }
 
       try {
-        const response = await fetch(`https://devsoc-autocred.onrender.com/progress/${eventName}/total`)
+        const response = await fetch(`https://devsoc-autocred-demo.onrender.com/progress/${eventName}/total`)
         const data = await response.json()
 
         if (data.total_certificates && data.total_certificates !== "Event not found") {
@@ -103,7 +100,7 @@ function CertificateForm() {
     }
 
     const setupEventSource = () => {
-      const eventSource = new EventSource(`https://devsoc-autocred.onrender.com/progress/${eventName}/completed`)
+      const eventSource = new EventSource(`https://devsoc-autocred-demo.onrender.com/progress/${eventName}/completed`)
       eventSourceRef.current = eventSource
 
       eventSource.onmessage = (event) => {
@@ -172,11 +169,8 @@ function CertificateForm() {
         // For bulk generation
         await startProgressTracking(formData.event_name)
 
-        const response = await fetch("https://devsoc-autocred.onrender.com/generate-certificates", {
+        const response = await fetch("https://devsoc-autocred-demo.onrender.com/generate-certificates", {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
           body: submitData,
         })
 
@@ -195,11 +189,8 @@ function CertificateForm() {
         }
       } else {
         // For single certificate generation
-        const response = await fetch("https://devsoc-autocred.onrender.com/generate-certificates", {
+        const response = await fetch("https://devsoc-autocred-demo.onrender.com/generate-certificates", {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
           body: submitData,
         })
 
@@ -217,19 +208,7 @@ function CertificateForm() {
       }
     } catch (error) {
       console.error("Error generating certificates:", error)
-
-      // Handle authentication errors
-      if (
-        error.message.includes("Could not validate credentials") ||
-        error.message.includes("Invalid token") ||
-        error.message.includes("Token revoked")
-      ) {
-        alert("Your session has expired. Please log in again.")
-        logout()
-      } else {
-        alert("Error generating certificates. Please try again.")
-      }
-
+      alert("Error generating certificates. Please try again.")
       setShowProgressModal(false)
       isProcessingRef.current = false
     } finally {
@@ -296,9 +275,7 @@ function CertificateForm() {
     <>
       <section className="form-section">
         <div className="form-header">
-          <button onClick={logout} className="logout-btn">
-            Logout  <i class="fa-solid fa-arrow-right-from-bracket logout-icon"></i>
-          </button>
+          <h2 className="form-title">Generate Certificate on the Fly!</h2>
         </div>
 
         <form id="certificate-form" onSubmit={handleSubmit}>
@@ -367,7 +344,7 @@ function CertificateForm() {
             : "All certificates generated successfully!"
         }
         actionUrl={downloadUrl}
-        actionText={formData.gen_type === "single" ? "Download" : "Download Log"}
+        actionText={formData.gen_type === "single" ? "View" : "Download Log"}
       />
 
       {/* Progress Modal */}

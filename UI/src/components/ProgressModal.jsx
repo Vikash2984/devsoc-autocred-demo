@@ -38,4 +38,3 @@ function ProgressModal({ isOpen, completed, total }) {
 }
 
 export default ProgressModal
-
