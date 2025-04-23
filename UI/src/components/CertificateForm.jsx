@@ -275,7 +275,7 @@ function CertificateForm() {
     <>
       <section className="form-section">
         <div className="form-header">
-          <h2 className="form-title">Generate Certificates on the Fly!</h2>
+          <h2 className="form-title">Certificates on the Fly!</h2>
         </div>
 
         <form id="certificate-form" onSubmit={handleSubmit}>
